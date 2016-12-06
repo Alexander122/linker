@@ -31,6 +31,8 @@ trait QueryBuilder
     }
 
     /**
+     * This condition should be written as [['field one' => 'value one'], 'and', ['field two' => 'value two']... ]
+     *
      * @param array $condition
      * @return $this
      */

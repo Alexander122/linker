@@ -11,7 +11,7 @@ class DefaultController
     public static function actionIndex()
     {
         $model = new PostsModel();
-        $model = $model->getAllPosts();
+        $model = $model->select()->where([['id' => 15]])->one();
 
         var_dump($model);
     }

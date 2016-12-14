@@ -23,12 +23,16 @@ class UrlParserHelper
         $url = mb_strtolower($url);
         $url = explode('/', $url);
         array_shift($url);
+        // $url = [
+        //     'module' => isset($url[0]) ? $url[0] : false,
+        //     'controller' => isset($url[1]) ? self::parseCamelCaseParser($url[1])."Controller" : false,
+        //     'action' => isset($url[2]) ? "action".self::parseCamelCaseParser($url[2]) : false
+        // ];
         $url = [
-            'module' => isset($url[0]) ? $url[0] : false,
-            'controller' => isset($url[1]) ? self::parseCamelCaseParser($url[1])."Controller" : false,
-            'action' => isset($url[2]) ? "action".self::parseCamelCaseParser($url[2]) : false
+            'module' => false,
+            'controller' => "DefaultController",
+            'action' => "actionIndex"
         ];
-
         return $url;
     }
 

@@ -3,5 +3,5 @@ return [
     'host' => 'localhost',
     'username' => 'root',
     'password' => '',
-    'database' => 'mvc-framework',
+    'database' => 'linker',
 ];

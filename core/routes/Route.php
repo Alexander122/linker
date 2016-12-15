@@ -3,6 +3,7 @@
 namespace core\routes;
 
 use core\helpers\UrlParserHelper;
+use core\Decorator\ControllerDecorator;
 
 /**
  * Class Rout
@@ -19,7 +20,6 @@ class Route
     public function __construct()
     {
         $this->init();
-        $this->run();
     }
 
     /**
@@ -35,12 +35,14 @@ class Route
         }
     }
 
-    
+    /**
+     * Route start
+     */
     public function run()
     {
         require_once "../../$this->module/controllers/$this->controller.php";
         $namespace = "$this->module\\controllers\\$this->controller";
-        $call = [new $namespace, $this->action];
-        $call();
+        $decorator = new ControllerDecorator(new $namespace);
+        $decorator->operations($this->action);
     }
 }

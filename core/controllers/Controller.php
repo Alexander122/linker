@@ -5,6 +5,22 @@ namespace core\controllers;
 class Controller
 {
     /**
+     * Running before the action
+     */
+    public function beforeAction()
+    {
+        echo "Do something beforeAction<br>";
+    }
+
+    /**
+     * Running after the action
+     */
+    public function afterAction()
+    {
+        echo "Do something afterAction<br>";
+    }
+    
+    /**
      * Render view
      * @param $view
      * @param array $params

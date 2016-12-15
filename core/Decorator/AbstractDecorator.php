@@ -2,7 +2,7 @@
 
 namespace core\Decorator;
 
-abstract class Decorator
+abstract class AbstractDecorator
 {
     /**
      * Decorated component

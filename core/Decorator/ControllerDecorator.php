@@ -2,7 +2,7 @@
 
 namespace core\Decorator;
 
-class ControllerDecorator extends Decorator
+class ControllerDecorator extends AbstractDecorator
 {
     /**
      * Sequence controller methods

@@ -1,22 +1,32 @@
 <?php
 
-namespace core\ActiveRecord;
+namespace core\QueryBuilder;
 
-trait QueryBuilder
+class QueryBuilder
 {
-    /**
-     * Table name
-     *
-     * @var
-     */
-    protected $tableName;
-
     /**
      * Query
      *
      * @var
      */
     private $_query;
+    
+    public function __construct()
+    {
+        $this->_query = new Query();
+    }
+    
+    public function __get($name)
+    {
+        $method = "get" . ucfirst($name);
+        if (method_exists($this, $method))
+            return $this->$method();
+    }
+    
+    public function getQuery()
+    {
+        return $this->_query->query;
+    }
 
     /**
      * @param string $condition
@@ -25,11 +35,22 @@ trait QueryBuilder
     public function select($condition = '*')
     {
         $list = self::getList($condition);
-        $this->_query = "SELECT {$list} FROM {$this->tableName}";
+        $this->_query->addQuery("SELECT {$list}");
 
         return $this;
     }
-
+    
+    /**
+     * @param $tableName
+     * @return $this
+     */
+    public function from($tableName)
+    {
+        $this->_query->addQuery(" FROM {$tableName}");
+        
+        return $this;
+    }
+    
     /**
      * This condition should be written as [['field one' => 'value one'], 'and', ['field two' => 'value two']... ]
      *
@@ -38,13 +59,13 @@ trait QueryBuilder
      */
     public function where($condition = [])
     {
-        $this->_query .= ' WHERE ';
+        $this->_query->addQuery(" WHERE ");
         foreach ($condition as $key => $value) {
             if (is_array($value)) {
                 $item = each($value);
-                $this->_query .= "`{$item['key']}` = '{$item['value']}'";
+                $this->_query->addQuery("`{$item['key']}` = '{$item['value']}'");
             } else {
-                $this->_query .= " {$value} ";
+                $this->_query->addQuery(" {$value} ");
             }
         }
 
@@ -58,7 +79,7 @@ trait QueryBuilder
      */
     public function orderBy($condition, $order = 'ASC')
     {
-        $this->_query .= " ORDER BY {$condition} {$order}";
+        $this->_query->addQuery(" ORDER BY {$condition} {$order}");
 
         return $this;
     }
@@ -69,25 +90,9 @@ trait QueryBuilder
      */
     public function groupBy($condition)
     {
-        $this->_query .= " GROUP BY {$condition}";
+        $this->_query->addQuery(" GROUP BY {$condition}");
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function one()
-    {
-        return $this->recordFields($this->mysqli->query($this->_query)->fetch_assoc());
-    }
-
-    /**
-     * @return array
-     */
-    public function all()
-    {
-        return $this->recordFields(self::getMySqlResultAsArray($this->mysqli->query($this->_query)));
     }
 
     /**
@@ -95,7 +100,7 @@ trait QueryBuilder
      */
     public function insert()
     {
-        $this->_query = "INSERT INTO {$this->tableName}";
+        $this->_query->addQuery("INSERT INTO {$this->tableName}");
 
         return $this;
     }
@@ -107,7 +112,7 @@ trait QueryBuilder
     public function columns($condition)
     {
         $list = self::getList($condition);
-        $this->_query .= " ({$list})";
+        $this->_query->addQuery(" ({$list})");
 
         return $this;
     }
@@ -119,9 +124,9 @@ trait QueryBuilder
     public function values($condition)
     {
         $list = self::getList($condition, true);
-        $this->_query .= " VALUES ({$list})";
+        $this->_query->addQuery(" VALUES ({$list})");
 
-        return $this->mysqli->query($this->_query);
+        return $this;
     }
 
     /**

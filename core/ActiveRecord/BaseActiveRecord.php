@@ -19,25 +19,28 @@ class BaseActiveRecord extends Model
     protected $fields = [];
 
     /**
-     * Get ActiveRecord field
-     * 
      * @param $name
      * @return mixed
      */
     public function __get($name)
     {
-        return $this->$name = $this->fields[$name];
+        $method = "get" . ucfirst($name);
+        if (method_exists($this, $method))
+            return $this->$method();
+        
+        if (array_key_exists($name, $this->fields))
+            $value = $this->fields[$name];
+            
+        return isset($value) ? $value : null;
     }
 
     /**
-     * Set ActiveRecord field
-     * 
      * @param $name
      * @param $value
      */
     public function __set($name, $value)
     {
-        if (isset($this->fields[$name])) {
+        if (array_key_exists($name, $this->fields)) {
             $this->fields[$name] = $value;
         }
     }

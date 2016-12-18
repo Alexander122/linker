@@ -10,7 +10,7 @@ class Config
     {
         $path = "../../$name/Config/" . ucfirst($arguments[0]) . ".php";
         if (file_exists($path)) {
-            return require_once $path;
+            return require $path;
         }
     }
     

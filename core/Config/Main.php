@@ -1,4 +1,4 @@
 <?php
 return [
-    'myparam1' => 'thisparam'
+    'urlParser' => '\core\routes\Strategy\RouteUrlParser'
 ];

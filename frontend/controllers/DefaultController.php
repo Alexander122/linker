@@ -68,6 +68,6 @@ class DefaultController extends Controller
         // var_dump(new \stdClass());
         // var_dump(new PostsModel());
         
-        var_dump(Config::core('main'));
+        var_dump(Config::core('main')['urlParser']);
     }
 }

@@ -17,7 +17,7 @@ class Model
      */
     public function __construct()
     {
-        $config = require_once __DIR__ . '/../main-local.php';
+        $config = require_once __DIR__ . '/../Config/Db.php';
         $db = Db::getInstance($config);
         $this->mysqli = $db->getConnection();
     }

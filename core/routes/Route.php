@@ -10,15 +10,14 @@ use core\Decorator\ControllerDecorator;
  */
 class Route
 {
-    public $module = 'frontend';
-    public $controller = 'Default';
-    public $action = 'Index';
+    protected $parser;
 
     /**
      * Route constructor.
      */
-    public function __construct()
+    public function __construct(AbstractStrategy $parser)
     {
+        $this->parser = $parser;
         $this->init();
     }
 
@@ -27,12 +26,7 @@ class Route
      */
     public function init()
     {
-        if ($_SERVER['REDIRECT_URL']) {
-            $url                = UrlParserHelper::parseRequestUrl($_SERVER['REDIRECT_URL']);
-            $this->module       = $url['module']        ? $url['module']        : $this->module;
-            $this->controller   = $url['controller']    ? $url['controller']    : "{$this->controller}Controller";
-            $this->action       = $url['action']        ? $url['action']        : "action{$this->action}";
-        }
+        $this->parser->parseUrl();
     }
 
     /**
@@ -40,9 +34,10 @@ class Route
      */
     public function run()
     {
-        require_once "../../$this->module/controllers/$this->controller.php";
-        $namespace = "$this->module\\controllers\\$this->controller";
+        require_once "../../{$this->parser->module}/controllers/{$this->parser->controller}Controller.php";
+        $namespace = "{$this->parser->module}\\controllers\\{$this->parser->controller}Controller";
         $decorator = new ControllerDecorator(new $namespace);
-        $decorator->operations($this->action);
+        $action = "action{$this->parser->action}";
+        $decorator->operations($action);
     }
 }

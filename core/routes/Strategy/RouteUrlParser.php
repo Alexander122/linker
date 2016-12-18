@@ -16,10 +16,12 @@ class RouteUrlParser extends AbstractStrategy
         if ($url) {
             $url = mb_strtolower($url);
             $url = explode('/', $url);
-            $this->url = array_combine(
+            $url = array_combine(
                 ['module', 'controller', 'action'], 
                 [$url[0], $this->parseCamelCase($url[1]), $this->parseCamelCase($url[2])]
             );
         }
+        
+        return $url;
     }
 }

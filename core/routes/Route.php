@@ -11,6 +11,7 @@ use core\Decorator\ControllerDecorator;
 class Route
 {
     protected $parser;
+    protected $url = [];
 
     /**
      * Route constructor.
@@ -20,13 +21,21 @@ class Route
         $this->parser = $parser;
         $this->init();
     }
+    
+    public function __get($name)
+    {
+        if (in_array($name, ['module', 'controller', 'action']) && array_key_exists($name, $this->url))
+            return $this->url[$name];
+        
+        return $this->$name;
+    }
 
     /**
      * Routing initialization of variables
      */
     public function init()
     {
-        $this->parser->parseUrl();
+        $this->url = $this->parser->parseUrl();
     }
 
     /**
@@ -34,10 +43,10 @@ class Route
      */
     public function run()
     {
-        require_once "../../{$this->parser->module}/controllers/{$this->parser->controller}Controller.php";
-        $namespace = "{$this->parser->module}\\controllers\\{$this->parser->controller}Controller";
+        require_once "../../{$this->module}/controllers/{$this->controller}Controller.php";
+        $namespace = "{$this->module}\\controllers\\{$this->controller}Controller";
         $decorator = new ControllerDecorator(new $namespace);
-        $action = "action{$this->parser->action}";
+        $action = "action{$this->action}";
         $decorator->operations($action);
     }
 }

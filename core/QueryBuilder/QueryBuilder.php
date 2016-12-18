@@ -23,7 +23,7 @@ class QueryBuilder
             return $this->$method();
     }
     
-    public function getQuery()
+    public function __toString()
     {
         return $this->_query->query;
     }

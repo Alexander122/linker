@@ -36,6 +36,8 @@ class Route
     public function init()
     {
         $this->url = $this->parser->parseUrl();
+        $this->controller = "{$this->controller}Controller";
+        $this->action = "action{$this->action}";
     }
 
     /**
@@ -43,10 +45,9 @@ class Route
      */
     public function run()
     {
-        require_once "../../{$this->module}/controllers/{$this->controller}Controller.php";
-        $namespace = "{$this->module}\\controllers\\{$this->controller}Controller";
+        require_once "../../{$this->module}/controllers/{$this->controller}.php";
+        $namespace = "{$this->module}\\controllers\\{$this->controller}";
         $decorator = new ControllerDecorator(new $namespace);
-        $action = "action{$this->action}";
-        $decorator->operations($action);
+        $decorator->operations($this->action);
     }
 }

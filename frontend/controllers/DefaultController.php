@@ -68,6 +68,13 @@ class DefaultController extends Controller
         // var_dump(new \stdClass());
         // var_dump(new PostsModel());
         
-        var_dump(Config::core('main')['urlParser']);
+        // var_dump(Config::core('main')['urlParser']);
+        
+        $query = (new QueryBuilder())
+            ->select('id')
+            ->from('users');
+        $model = new PostsModel();
+        $model = $model->allQuery($query);
+        var_dump($model);
     }
 }

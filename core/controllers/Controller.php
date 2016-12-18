@@ -9,7 +9,7 @@ class Controller
      */
     public function beforeAction()
     {
-        echo "Do something beforeAction<br>";
+        // Do something
     }
 
     /**
@@ -17,7 +17,7 @@ class Controller
      */
     public function afterAction()
     {
-        echo "Do something afterAction<br>";
+        // Do something
     }
     
     /**

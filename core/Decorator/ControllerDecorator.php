@@ -10,7 +10,8 @@ class ControllerDecorator extends AbstractDecorator
     public function operations($action)
     {
         $this->component->beforeAction();
-        $this->component->{$action}();
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+        call_user_func_array([$this->component, $action], [$id]);
         $this->component->afterAction();
     }
 }

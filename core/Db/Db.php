@@ -4,6 +4,7 @@ namespace core\Db;
 
 use mysqli;
 
+// TODO сделать внедрение зависимостей (обьект конфигурации) для класса Db
 /**
  * Class Db
  */

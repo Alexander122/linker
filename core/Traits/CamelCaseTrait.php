@@ -10,7 +10,7 @@ trait CamelCaseTrait
      * @param $item
      * @return mixed
      */
-    public function parseCamelCase($item)
+    public static function parseCamelCase($item)
     {
         $piece = explode('-', $item);
         $piece = array_map(function ($value) {

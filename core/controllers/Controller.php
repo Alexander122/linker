@@ -2,6 +2,7 @@
 
 namespace core\controllers;
 
+// TODO реализовать поведение (при помощи паттерна Наблюдатель)
 class Controller
 {
     /**

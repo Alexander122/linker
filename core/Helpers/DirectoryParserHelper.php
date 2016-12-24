@@ -99,6 +99,7 @@ class DirectoryParserHelper
      */
     public function findAllFiles($map, $file)
     {
+        // TODO переписать метод при помощи функции array_map()
         static $path;
         static $tempPath;
 

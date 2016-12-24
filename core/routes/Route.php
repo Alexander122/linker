@@ -2,7 +2,6 @@
 
 namespace core\routes;
 
-use core\helpers\UrlParserHelper;
 use core\Decorator\ControllerDecorator;
 
 /**
@@ -29,13 +28,20 @@ class Route
         
         return $this->$name;
     }
+    
+    public function __set($name, $value)
+    {
+        if (in_array($name, ['module', 'controller', 'action']) && array_key_exists($name, $this->url))
+            $this->url[$name] = $value;
+    }
 
     /**
      * Routing initialization of variables
      */
     public function init()
     {
-        $this->url = $this->parser->parseUrl();
+        $parser = $this->parser;
+        $this->url = $parser::parseUrl();
         $this->controller = "{$this->controller}Controller";
         $this->action = "action{$this->action}";
     }
@@ -45,6 +51,7 @@ class Route
      */
     public function run()
     {
+        // TODO реализовать роутинг по рулсам
         require_once "../../{$this->module}/controllers/{$this->controller}.php";
         $namespace = "{$this->module}\\controllers\\{$this->controller}";
         $decorator = new ControllerDecorator(new $namespace);

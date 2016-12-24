@@ -2,6 +2,7 @@
 
 namespace core\ActiveRecord;
 
+// TODO реализовать методы save(), load(), delete()
 class ActiveRecord extends BaseActiveRecord
 {
     public function fetch($query = '', $amount = false)

@@ -1,4 +1,4 @@
 <?php
 return [
-    'urlParser' => '\core\routes\Strategy\RouteUrlParser'
+    'urlParser' => '\core\routes\Strategy\PrettyUrlParser'
 ];

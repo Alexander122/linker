@@ -74,8 +74,12 @@ class DefaultController extends Controller
         $query = (new FluentInterface())
             ->select('id')
             ->from('users');
-        $model = new PostsModel();
-        $model = $model->allQuery($query);
-        var_dump($model);
+        $model = (new PostsModel())->allQuery($query);
+        // var_dump($model);
+        
+        session_start(); 
+        if (!isset($_SESSION['counter'])) $_SESSION['counter']=0;
+        echo "Вы обновили эту страницу ".$_SESSION['counter']++." раз.<br>
+        <a href=".$_SERVER['REQUEST_URI'].">обновить</a>";
     }
 }

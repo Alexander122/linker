@@ -7,6 +7,7 @@ use core\QueryBuilder\QueryBuilder;
 use core\QueryBuilder\Query;
 use core\controllers\Controller;
 use core\Manager\Config;
+use core\FluentInterface\FluentInterface;
 
 /**
  * Class DefaultController
@@ -70,7 +71,7 @@ class DefaultController extends Controller
         
         // var_dump(Config::core('main')['urlParser']);
         
-        $query = (new QueryBuilder())
+        $query = (new FluentInterface())
             ->select('id')
             ->from('users');
         $model = new PostsModel();

@@ -2,7 +2,7 @@
 
 namespace core\models;
 
-use core\db\Db;
+use core\Db\Db;
 
 class Model
 {
@@ -17,7 +17,7 @@ class Model
      */
     public function __construct()
     {
-        $config = require_once __DIR__ . '/../Config/Db.php';
+        $config = require_once __DIR__ . '/../config/db.php';
         $db = Db::getInstance($config);
         $this->mysqli = $db->getConnection();
     }

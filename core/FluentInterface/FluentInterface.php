@@ -1,8 +1,8 @@
 <?php
 
-namespace core\QueryBuilder;
+namespace core\FluentInterface;
 
-class QueryBuilder
+class FluentInterface
 {
     /**
      * Query
@@ -11,14 +11,14 @@ class QueryBuilder
      */
     private $_query;
     
-    public function __construct($queryInstance)
+    public function addQuery($query)
     {
-        $this->_query = $queryInstance;
+        $this->_query .= $query;
     }
     
     public function __toString()
     {
-        return $this->_query->query;
+        return $this->_query;
     }
 
     /**
@@ -28,7 +28,7 @@ class QueryBuilder
     public function select($condition = '*')
     {
         $list = self::getList($condition);
-        $this->_query->addQuery("SELECT {$list}");
+        $this->addQuery("SELECT {$list}");
 
         return $this;
     }
@@ -39,7 +39,7 @@ class QueryBuilder
      */
     public function from($tableName)
     {
-        $this->_query->addQuery(" FROM {$tableName}");
+        $this->addQuery(" FROM {$tableName}");
         
         return $this;
     }
@@ -52,13 +52,13 @@ class QueryBuilder
      */
     public function where($condition = [])
     {
-        $this->_query->addQuery(" WHERE ");
+        $this->addQuery(" WHERE ");
         foreach ($condition as $key => $value) {
             if (is_array($value)) {
                 $item = each($value);
-                $this->_query->addQuery("`{$item['key']}` = '{$item['value']}'");
+                $this->addQuery("`{$item['key']}` = '{$item['value']}'");
             } else {
-                $this->_query->addQuery(" {$value} ");
+                $this->addQuery(" {$value} ");
             }
         }
 
@@ -72,7 +72,7 @@ class QueryBuilder
      */
     public function orderBy($condition, $order = 'ASC')
     {
-        $this->_query->addQuery(" ORDER BY {$condition} {$order}");
+        $this->addQuery(" ORDER BY {$condition} {$order}");
 
         return $this;
     }
@@ -83,7 +83,7 @@ class QueryBuilder
      */
     public function groupBy($condition)
     {
-        $this->_query->addQuery(" GROUP BY {$condition}");
+        $this->addQuery(" GROUP BY {$condition}");
 
         return $this;
     }
@@ -93,7 +93,7 @@ class QueryBuilder
      */
     public function insert()
     {
-        $this->_query->addQuery("INSERT INTO {$this->tableName}");
+        $this->addQuery("INSERT INTO {$this->tableName}");
 
         return $this;
     }
@@ -105,7 +105,7 @@ class QueryBuilder
     public function columns($condition)
     {
         $list = self::getList($condition);
-        $this->_query->addQuery(" ({$list})");
+        $this->addQuery(" ({$list})");
 
         return $this;
     }
@@ -117,7 +117,7 @@ class QueryBuilder
     public function values($condition)
     {
         $list = self::getList($condition, true);
-        $this->_query->addQuery(" VALUES ({$list})");
+        $this->addQuery(" VALUES ({$list})");
 
         return $this;
     }

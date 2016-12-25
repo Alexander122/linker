@@ -2,7 +2,9 @@
 
 namespace core\models;
 
-use core\Db\Db;
+use core\Database\MySQLiConnection;
+use core\Database\DatabaseConfiguration;
+use core\Manager\Config;
 
 class Model
 {
@@ -10,16 +12,16 @@ class Model
      * Connection to the database instance
      * @var \mysqli
      */
-    public $mysqli;
+    protected $mysqli;
 
     /**
      * Model constructor.
      */
     public function __construct()
     {
-        // TODO сделать подключение конфигурации через менеджер
-        $config = require_once __DIR__ . '/../config/db.php';
-        $db = Db::getInstance($config);
+        $config = Config::core('db');
+        $databaseConfiguration = new DatabaseConfiguration($config);
+        $db = MySQLiConnection::getInstance($databaseConfiguration);
         $this->mysqli = $db->getConnection();
     }
 }

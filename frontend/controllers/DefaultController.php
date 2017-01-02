@@ -85,7 +85,7 @@ class DefaultController extends Controller
     }
     
     public function actionApi()
-    {
+    {var_dump(10);die;
         $query = VkApi::send('users.search', [
             'sex' => 1,
             'status' => 6,

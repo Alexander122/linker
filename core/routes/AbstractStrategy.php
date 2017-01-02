@@ -8,7 +8,7 @@ abstract class AbstractStrategy
 {
     use CamelCaseTrait;
     
-    abstract public static function getUrl();
+    abstract public static function getUrl($param);
     
     /**
      * @param $url

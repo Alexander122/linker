@@ -85,17 +85,22 @@ class DefaultController extends Controller
     }
     
     public function actionApi()
-    {var_dump(10);die;
-        $query = VkApi::send('users.search', [
-            'sex' => 1,
-            'status' => 6,
-            'age_from' => 20,
-            'age_to' => 24,
-            'count' => 50,
-            'city' => 650, // 650 - dnepr
-            'fields' => 'city',
-            'access_token' => Manager::config('core', 'main', 'social.vk.access_token'),
+    {
+        // $query = VkApi::send('users.search', [
+        //     'sex' => 1,
+        //     'status' => 6,
+        //     'age_from' => 20,
+        //     'age_to' => 24,
+        //     'count' => 50,
+        //     'city' => 650, // 650 - dnepr
+        //     'fields' => 'city',
+        //     'access_token' => Manager::config('core', 'main', 'social.vk.access_token'),
+        // ]);
+        
+        $query = VkApi::send('users.get', [
+            'user_ids' => 387468926
         ]);
-        var_dump($query);
+        
+        var_dump($query->response[0]);
     }
 }

@@ -3,8 +3,7 @@ return [
     'urlParser' => '\core\routes\Strategy\PrettyUrlParser',
     'social' => [
         'vk' => [
-            'access_token' => '57cc55469979692631e7e1b1f52393c20b69c65945732ec9934cbfbbaaebadfcc2e1597c51816d05b4658',
-            
+            'access_token' => '67b7e1e7b96a60b796e1a2bb2d05ffedc9efb5ee7adca5c8e2b71e0903bc2e7ae5508d67390d0588c6ec0',
         ]
     ]
 ];

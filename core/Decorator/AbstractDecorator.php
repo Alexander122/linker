@@ -14,6 +14,6 @@ abstract class AbstractDecorator
      */
     public function __construct($component)
     {
-        $this->component = new $component;
+        $this->component = $component;
     }
 }

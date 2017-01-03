@@ -21,6 +21,13 @@ class Controller
         // Do something
     }
     
+    public function __construct($pieces)
+    {
+        $this->module = $pieces['module'];
+        $this->controller = $pieces['controller'];
+        $this->action = $pieces['action'];
+    }
+    
     /**
      * Render view
      * @param $view
@@ -30,7 +37,7 @@ class Controller
         extract($params);
 
         ob_start();
-        require_once '../'.$view;
+        require_once "../view/{$this->controller}/$view.php";
         $renderedView = ob_get_clean();
 
         echo $renderedView;

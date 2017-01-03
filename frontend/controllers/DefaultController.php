@@ -103,4 +103,9 @@ class DefaultController extends Controller
         
         var_dump($query->response[0]);
     }
+    
+    public function actionJsPopup()
+    {
+        $this->render('popup');
+    }
 }

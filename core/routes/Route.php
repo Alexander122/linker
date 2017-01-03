@@ -40,8 +40,8 @@ class Route
      */
     public function init()
     {
-        $parser = $this->parser;
-        $this->url = $parser::parseUrl();
+        $parser = [$this->parser, 'parseUrl'];
+        $this->url = $parser();
         $this->controller = "{$this->controller}Controller";
         $this->action = "action{$this->action}";
     }
@@ -54,7 +54,8 @@ class Route
         // TODO реализовать роутинг по рулсам
         require_once "../../{$this->module}/controllers/{$this->controller}.php";
         $namespace = "{$this->module}\\controllers\\{$this->controller}";
-        $decorator = new ControllerDecorator(new $namespace);
+        $parser = [$this->parser, 'parseUrl'];
+        $decorator = new ControllerDecorator(new $namespace($parser(false)));
         $decorator->operations($this->action);
     }
 }

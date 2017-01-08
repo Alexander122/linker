@@ -2,6 +2,7 @@
 
 namespace core\Database;
 
+// TODO попробывать реализовать где-то интерфейс IteratorAggregate, Countable (разобраться с паттерном Итератор). К примеру, можно реализовать коллекцию, если запрос возвращает больше одного результата
 class DatabaseConfiguration implements \ArrayAccess
 {
     /**

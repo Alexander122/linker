@@ -4,7 +4,7 @@ namespace core\models;
 
 use core\Database\MySQLiConnection;
 use core\Database\DatabaseConfiguration;
-use core\Manager\Config;
+use core\Manager\Manager;
 
 class Model
 {

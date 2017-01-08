@@ -8,24 +8,29 @@ abstract class AbstractStrategy
 {
     use CamelCaseTrait;
     
-    abstract public static function getUrl();
+    abstract public static function getUrl($param);
     
     /**
      * @param $url
      * @return array
      */
-    public static function parseUrl()
+    public static function parseUrl($camelCaseFormat = true)
     {
         $url = static::getUrl();
         if ($url) {
             $url = mb_strtolower($url);
             $url = explode('/', $url);
-            $url = array_combine(
+            if ($camelCaseFormat == false)
+                return array_combine(
+                    ['module', 'controller', 'action'], 
+                    [$url[0], $url[1], $url[2]]
+                );
+            return array_combine(
                 ['module', 'controller', 'action'], 
                 [$url[0], self::parseCamelCase($url[1]), self::parseCamelCase($url[2])]
             );
         }
         
-        return $url;
+        return false;
     }
 }

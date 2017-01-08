@@ -6,8 +6,9 @@ use frontend\models\PostsModel;
 use core\QueryBuilder\QueryBuilder;
 use core\QueryBuilder\Query;
 use core\controllers\Controller;
-use core\Manager\Config;
+use core\Manager\Manager;
 use core\FluentInterface\FluentInterface;
+use core\Social\VkApi;
 
 /**
  * Class DefaultController
@@ -81,5 +82,30 @@ class DefaultController extends Controller
         if (!isset($_SESSION['counter'])) $_SESSION['counter']=0;
         echo "Вы обновили эту страницу ".$_SESSION['counter']++." раз.<br>
         <a href=".$_SERVER['REQUEST_URI'].">обновить</a>";
+    }
+    
+    public function actionApi()
+    {
+        // $query = VkApi::send('users.search', [
+        //     'sex' => 1,
+        //     'status' => 6,
+        //     'age_from' => 20,
+        //     'age_to' => 24,
+        //     'count' => 50,
+        //     'city' => 650, // 650 - dnepr
+        //     'fields' => 'city',
+        //     'access_token' => Manager::config('core', 'main', 'social.vk.access_token'),
+        // ]);
+        
+        $query = VkApi::send('users.get', [
+            'user_ids' => 387468926
+        ]);
+        
+        var_dump($query->response[0]);
+    }
+    
+    public function actionJsPopup()
+    {
+        $this->render('popup');
     }
 }

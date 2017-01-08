@@ -19,7 +19,7 @@ class Model
      */
     public function __construct()
     {
-        $config = Config::core('db');
+        $config = Manager::config('core', 'db');
         $databaseConfiguration = new DatabaseConfiguration($config);
         $db = MySQLiConnection::getInstance($databaseConfiguration);
         $this->mysqli = $db->getConnection();

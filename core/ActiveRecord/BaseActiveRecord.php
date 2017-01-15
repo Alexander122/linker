@@ -40,8 +40,6 @@ class BaseActiveRecord extends Model
      */
     public function __set($name, $value)
     {
-        if (array_key_exists($name, $this->fields)) {
-            $this->fields[$name] = $value;
-        }
+        $this->fields[$name] = $value;
     }
 }

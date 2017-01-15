@@ -2,6 +2,8 @@
 
 namespace core\ActiveRecord;
 
+use core\FluentInterface\FluentInterface;
+
 // TODO реализовать методы save(), load(), delete()
 class ActiveRecord extends BaseActiveRecord
 {
@@ -70,5 +72,30 @@ class ActiveRecord extends BaseActiveRecord
         }
 
         return $result;
+    }
+    
+    public function beforeSave()
+    {
+
+    }
+    
+    final public function save()
+    {
+        $this->beforeSave();
+        $query = new FluentInterface();
+        $primaryKey = $this->{$this->getPrimaryKey()};
+        if (!empty($primaryKey)) {
+            $sql = $query->insert($this->getTableName())->columns(array_flip($this->fields))->values($this->fields);
+            var_dump($sql);
+            var_dump($this->mysqli->query($sql));
+        } else {
+            // TODO реализовать update строки (пере этим реализовать update в FluentInterface)
+        }
+        $this->afterSave();
+    }
+    
+    public function afterSave()
+    {
+        
     }
 }

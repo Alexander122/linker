@@ -6,8 +6,10 @@ use core\Database\MySQLiConnection;
 use core\Database\DatabaseConfiguration;
 use core\Manager\Manager;
 
-class Model
+class Model implements \SplSubject
 {
+    private $observers = [];
+    
     /**
      * Connection to the database instance
      * @var \mysqli
@@ -23,5 +25,22 @@ class Model
         $databaseConfiguration = new DatabaseConfiguration($config);
         $db = MySQLiConnection::getInstance($databaseConfiguration);
         $this->mysqli = $db->getConnection();
+    }
+    
+    public function attach(\SplObserver $observer)
+    {
+        $this->observers[] = $observer;
+    }
+    
+    public function detach(\SplObserver $observer)
+    {
+        $this->observers[] = $observer;
+    }
+    
+    public function notify()
+    {
+        foreach ($this->observers as $observer) {
+            $observer->update($this);
+        }
     }
 }

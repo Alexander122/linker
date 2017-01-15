@@ -91,9 +91,9 @@ class FluentInterface
     /**
      * @return $this
      */
-    public function insert()
+    public function insert($tableName)
     {
-        $this->addQuery("INSERT INTO {$this->tableName}");
+        $this->addQuery("INSERT INTO {$tableName}");
 
         return $this;
     }

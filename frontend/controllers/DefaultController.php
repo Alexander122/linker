@@ -25,7 +25,7 @@ class DefaultController extends Controller
             ->where([['id' => 1], 'and', ['name' => 'mark']]);
         
         $model = new PostsModel();
-        $model = $model->allQuery($builder->query);
+        $model = $model->selectAll($builder->query);
         
         $array = [
             'option1' => 'value1', 
@@ -76,7 +76,7 @@ class DefaultController extends Controller
         $query = (new FluentInterface())
             ->select('id')
             ->from('users');
-        $model = (new PostsModel())->allQuery($query);
+        $model = (new PostsModel())->selectAll($query);
         // var_dump($model);
         
         session_start(); 
@@ -109,7 +109,7 @@ class DefaultController extends Controller
     {
         $model = new UsersModel();
         $model->id = 1;
-        $model->name = 'Alex';
+        $model->name = 'Hello world!!!';
         $model->save();
         // $observer = new ModelObserver();
         // $model->attach($observer);

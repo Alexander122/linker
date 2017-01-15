@@ -10,12 +10,12 @@ class FluentInterface
      * @var
      */
     private $_query;
-    
+
     public function addQuery($query)
     {
         $this->_query .= $query;
     }
-    
+
     public function __toString()
     {
         return $this->_query;
@@ -32,7 +32,7 @@ class FluentInterface
 
         return $this;
     }
-    
+
     /**
      * @param $tableName
      * @return $this
@@ -40,12 +40,13 @@ class FluentInterface
     public function from($tableName)
     {
         $this->addQuery(" FROM {$tableName}");
-        
+
         return $this;
     }
-    
+
     /**
      * This condition should be written as [['field one' => 'value one'], 'and', ['field two' => 'value two']... ]
+     * For example: ->where(['id' => 1, 'name' => 'Alex']) or ->where(["`id` = 1", "`name` = 'Alex'"])
      *
      * @param array $condition
      * @return $this
@@ -118,6 +119,29 @@ class FluentInterface
     {
         $list = self::getList($condition, true);
         $this->addQuery(" VALUES ({$list})");
+
+        return $this;
+    }
+
+    public function update($tableName)
+    {
+        $this->addQuery("UPDATE {$tableName} ");
+
+        return $this;
+    }
+
+    public function set($condition)
+    {
+        $this->addQuery("SET ");
+        $result = '';
+        for ($i = 0, $count = count($condition); $i < $count; $i++) {
+            $element = each($condition);
+            $result .= " `{$element['key']}` = '{$element['value']}'";
+            if ($i != $count - 1) {
+                $result .= ", ";
+            }
+        }
+        $this->addQuery($result);
 
         return $this;
     }

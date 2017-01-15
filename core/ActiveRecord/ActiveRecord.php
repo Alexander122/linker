@@ -21,7 +21,7 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * @return array
      */
-    public function oneQuery($query)
+    public function selectOne($query)
     {
         return $this->recordFields($this->mysqli->query($query)->fetch_assoc());
     }
@@ -29,11 +29,21 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * @return array
      */
-    public function allQuery($query)
+    public function selectAll($query)
     {
         return $this->recordFields(self::getMySqlResultAsArray($this->mysqli->query($query)));
     }
-    
+
+    public function insert($query)
+    {
+        return $this->mysqli->query($query);
+    }
+
+    public function update($query)
+    {
+        return $this->mysqli->query($query);
+    }
+
     /**
      * Returns query results in the form of ActiveRecord or array ActiveRecord`s
      *
@@ -85,11 +95,17 @@ class ActiveRecord extends BaseActiveRecord
         $query = new FluentInterface();
         $primaryKey = $this->{$this->getPrimaryKey()};
         if (!empty($primaryKey)) {
-            $sql = $query->insert($this->getTableName())->columns(array_flip($this->fields))->values($this->fields);
-            var_dump($sql);
-            var_dump($this->mysqli->query($sql));
+            $sql = $query
+                ->update($this->getTableName())
+                ->set($this->fields)
+                ->where([[$this->getPrimaryKey() => $primaryKey]]);
+            $this->update($sql);
         } else {
-            // TODO реализовать update строки (пере этим реализовать update в FluentInterface)
+            $sql = $query
+                ->insert($this->getTableName())
+                ->columns(array_flip($this->fields))
+                ->values($this->fields);
+            $this->insert($sql);
         }
         $this->afterSave();
     }

@@ -2,13 +2,14 @@
 
 namespace frontend\controllers;
 
-use frontend\models\PostsModel;
+use frontend\models\UsersModel;
 use core\QueryBuilder\QueryBuilder;
 use core\QueryBuilder\Query;
 use core\controllers\Controller;
 use core\Manager\Manager;
 use core\FluentInterface\FluentInterface;
 use core\Social\VkApi;
+use core\Observers\ModelObserver;
 
 /**
  * Class DefaultController
@@ -104,8 +105,13 @@ class DefaultController extends Controller
         var_dump($query->response[0]);
     }
     
-    public function actionJsPopup()
+    public function actionObserver()
     {
-        $this->render('popup');
+        $model = new UsersModel();
+        $model->id = 1;
+        $model->name = 'Alex';
+        $model->save();
+        // $observer = new ModelObserver();
+        // $model->attach($observer);
     }
 }

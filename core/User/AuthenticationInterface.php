@@ -5,5 +5,9 @@ namespace core\User;
 
 interface AuthenticationInterface
 {
-    public function checkPassword($password, $hashPassword);
+    public function getLoginField();
+
+    public function getPasswordField();
+
+    public function getAuthKeyField();
 }

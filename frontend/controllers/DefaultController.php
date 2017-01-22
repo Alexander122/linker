@@ -114,26 +114,6 @@ class DefaultController extends Controller
     public function actionUser()
     {
         $user = new User();
-        var_dump($user->signup(1,1));
-    }
-    
-    public function actionSession()
-    {
-        session_start();
-        $_SESSION['user'] += 1;
-        echo $_SESSION['user'];
-        session_write_close();
-    }
-
-    public function actionTestSession()
-    {
-        session_start();
-        var_dump($_SESSION);
-    }
-    
-    public function actionEndOfSession()
-    {
-        session_start();
-        var_dump($_SESSION);
+        $user->signup('test tet', 'hello');
     }
 }

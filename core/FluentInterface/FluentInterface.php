@@ -91,9 +91,9 @@ class FluentInterface
     /**
      * @return $this
      */
-    public function insert()
+    public function insert($tableName)
     {
-        $this->addQuery("INSERT INTO {$this->tableName}");
+        $this->addQuery("INSERT INTO {$tableName}");
 
         return $this;
     }
@@ -102,7 +102,7 @@ class FluentInterface
      * @param $condition
      * @return $this
      */
-    public function columns($condition)
+    public function columns(array $condition)
     {
         $list = self::getList($condition);
         $this->addQuery(" ({$list})");
@@ -114,7 +114,7 @@ class FluentInterface
      * @param $condition
      * @return bool|\mysqli_result
      */
-    public function values($condition)
+    public function values(array $condition)
     {
         $list = self::getList($condition, true);
         $this->addQuery(" VALUES ({$list})");

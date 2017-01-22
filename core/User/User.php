@@ -2,15 +2,36 @@
 // TODO реализовать модель пользователя для методов аутентификации
 namespace core\User;
 
-use core\models\Model;
+use core\ActiveRecord\ActiveRecord;
+use core\ActiveRecord\ActiveRecordInterface;
 use core\Traits\Authentication;
 
-class User extends Model implements AuthenticationInterface
+class User extends ActiveRecord implements AuthenticationInterface, ActiveRecordInterface
 {
     use Authentication;
     
-    public function checkPassword($password, $hashPassword)
+    public function getLoginField()
     {
-        return $hashPassword === md5($password);
+        return 'name';
+    }
+
+    public function getPasswordField()
+    {
+        return 'password';
+    }
+
+    public function getAuthKeyField()
+    {
+        return 'auth_key';
+    }
+
+    public function getTableName()
+    {
+        return 'users';
+    }
+
+    public function getPrimaryKey()
+    {
+        return 'user_id';
     }
 }

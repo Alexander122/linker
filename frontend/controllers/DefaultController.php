@@ -9,6 +9,8 @@ use core\controllers\Controller;
 use core\Manager\Manager;
 use core\FluentInterface\FluentInterface;
 use core\Social\VkApi;
+use core\Observers\ModelObserver;
+use core\User\User;
 
 /**
  * Class DefaultController
@@ -107,5 +109,31 @@ class DefaultController extends Controller
     public function actionJsPopup()
     {
         $this->render('popup');
+    }
+    
+    public function actionUser()
+    {
+        $user = new User();
+        var_dump($user->signup(1,1));
+    }
+    
+    public function actionSession()
+    {
+        session_start();
+        $_SESSION['user'] += 1;
+        echo $_SESSION['user'];
+        session_write_close();
+    }
+
+    public function actionTestSession()
+    {
+        session_start();
+        var_dump($_SESSION);
+    }
+    
+    public function actionEndOfSession()
+    {
+        session_start();
+        var_dump($_SESSION);
     }
 }

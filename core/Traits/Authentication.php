@@ -7,7 +7,6 @@ trait Authentication
 {
     public function signup($login, $password)
     {
-        
         return true;
     }
 }

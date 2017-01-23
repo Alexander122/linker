@@ -19,10 +19,44 @@ trait Authentication
         }
         $user = new self();
         $user->{$this->getLoginField()} = $login;
-        $user->{$this->getPasswordField()} = $password;
+        $user->{$this->getPasswordField()} = md5($password);
         $user->{$this->getAuthKeyField()} = $this->getAuthenticationKey();
+        setcookie("authKey", $user->{$this->getAuthKeyField()});
+        // TODO save() нечего не возвращает
+        $user->save();
 
-        return $user->save();
+        return $user;
+    }
+    
+    public function login($login, $password, $authKeyValidation = false)
+    {
+        $query = (new FluentInterface())
+            ->select()
+            ->from($this->getTableName())
+            ->where([[$this->getLoginField() => $login]]);
+        $user = $this->selectOne($query);
+        if (!$user) {
+            return false;
+        }
+        if ($authKeyValidation != false && !empty($authKeyValidation)) {
+            if ($user->auth_key === $authKeyValidation) {
+                session_start();
+                $_SESSION['user'] = $user;
+                return true;
+            }
+            
+            return false;
+        }
+        if ($this->checkPassword($password, $user->password)) {
+            session_start();
+            $_SESSION['user'] = $user;
+            return true;
+        }
+    }
+    
+    public function checkPassword($password, $hashPassword)
+    {
+        return $hashPassword === md5($password);
     }
 
     public function getAuthenticationKey($length = 32)

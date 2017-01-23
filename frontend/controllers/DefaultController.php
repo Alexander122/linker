@@ -114,6 +114,10 @@ class DefaultController extends Controller
     public function actionUser()
     {
         $user = new User();
-        $user->signup('test tet', 'hello');
+        var_dump($_COOKIE);
+        $authKey = $_COOKIE['authKey'];
+        // $user->signup('alexander11', '123456');
+        var_dump($user->login('alexander11', '123456', $authKey));
+        var_dump($_SESSION);
     }
 }

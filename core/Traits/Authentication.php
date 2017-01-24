@@ -21,37 +21,44 @@ trait Authentication
         $user->{$this->getLoginField()} = $login;
         $user->{$this->getPasswordField()} = md5($password);
         $user->{$this->getAuthKeyField()} = $this->getAuthenticationKey();
-        setcookie("authKey", $user->{$this->getAuthKeyField()});
         // TODO save() нечего не возвращает
         $user->save();
 
         return $user;
     }
     
-    public function login($login, $password, $authKeyValidation = false)
+    public function login($login, $password, $rememberMe = false)
     {
+        if (isset($_COOKIE[$this->getAuthKeyField()])) {
+            $query = (new FluentInterface())
+            ->select()
+            ->from($this->getTableName())
+            ->where([[$this->getAuthKeyField() => $_COOKIE[$this->getAuthKeyField()]]]);
+            if ($user = $this->selectOne($query)) {
+                session_start();
+                $_SESSION['user_' . $user->id] = $user;
+                return true;
+            }
+            // редирект на домашнюю страницу
+            // if ($_COOKIE[$this->getAuthKeyField()] === $user->{$this->getAuthKeyField()}) {
+
+            // }
+        }
         $query = (new FluentInterface())
             ->select()
             ->from($this->getTableName())
             ->where([[$this->getLoginField() => $login]]);
-        $user = $this->selectOne($query);
-        if (!$user) {
-            return false;
-        }
-        if ($authKeyValidation != false && !empty($authKeyValidation)) {
-            if ($user->auth_key === $authKeyValidation) {
-                session_start();
-                $_SESSION['user'] = $user;
-                return true;
-            }
-            
+        if (!$user = $this->selectOne($query)) {
             return false;
         }
         if ($this->checkPassword($password, $user->password)) {
+            setcookie($this->getAuthKeyField(), $user->{$this->getAuthKeyField()}, $rememberMe ? time() + 60 * 60 * 24 * 30 : 0);
             session_start();
-            $_SESSION['user'] = $user;
+            $_SESSION['user_' . $user->id] = $user;
             return true;
         }
+        
+        return false;
     }
     
     public function checkPassword($password, $hashPassword)

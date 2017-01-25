@@ -35,7 +35,9 @@ trait Authentication
             ->from($this->getTableName())
             ->where([[$this->getAuthKeyField() => $_COOKIE[$this->getAuthKeyField()]]]);
             if ($user = $this->selectOne($query)) {
-                session_start();
+                if (session_status() == PHP_SESSION_NONE) {
+                    session_start();
+                }
                 $_SESSION['user_' . $user->id] = $user;
                 return true;
             }
@@ -52,12 +54,39 @@ trait Authentication
             return false;
         }
         if ($this->checkPassword($password, $user->password)) {
+            unset($_COOKIE[$this->getAuthKeyField()]);
             setcookie($this->getAuthKeyField(), $user->{$this->getAuthKeyField()}, $rememberMe ? time() + 60 * 60 * 24 * 30 : 0);
-            session_start();
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
             $_SESSION['user_' . $user->id] = $user;
             return true;
         }
         
+        return false;
+    }
+
+    public function logout($login)
+    {
+        $query = (new FluentInterface())
+            ->select()
+            ->from($this->getTableName())
+            ->where([[$this->getLoginField() => $login]]);
+        if ($user = $this->selectOne($query)) {
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            unset($_SESSION['user_' . $user->id]);
+            unset($_COOKIE[$this->getAuthKeyField()]);
+            $sql = (new FluentInterface())
+                ->insert($this->getTableName())
+                ->columns([$this->getAuthKeyField()])
+                ->values([$this->getAuthenticationKey()]);
+            $user->save($sql);
+            session_destroy();
+            return true;
+        }
+
         return false;
     }
     

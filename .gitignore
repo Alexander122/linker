@@ -1,2 +1,2 @@
 .idea
-core/db.php
+core/config/db.php

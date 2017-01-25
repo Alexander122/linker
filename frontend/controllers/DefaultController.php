@@ -116,8 +116,10 @@ class DefaultController extends Controller
         $user = new User();
         // var_dump($_COOKIE);
         // $authKey = $_COOKIE['authKey'];
-        // $user->signup('alexander11', '123456');
+         $user->signup('alexander11', '123456');
         var_dump($user->login('alexander11', '123456'));
+        var_dump($_SESSION);
+        $user->logout('alexander11');
         var_dump($_SESSION);
     }
 }

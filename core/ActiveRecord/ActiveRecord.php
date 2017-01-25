@@ -115,6 +115,7 @@ class ActiveRecord extends BaseActiveRecord
         $query = new FluentInterface();
         $primaryKey = $this->{$this->getPrimaryKey()};
         if (!empty($primaryKey)) {
+            // TODO реализовать update() и set()
             $sql = $query
                 ->update($this->getTableName())
                 ->set($this->fields)

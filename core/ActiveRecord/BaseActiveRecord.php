@@ -16,7 +16,7 @@ class BaseActiveRecord extends Model
      *
      * @var array
      */
-    protected $fields = [];
+    private $fields = [];
 
     /**
      * @param $name

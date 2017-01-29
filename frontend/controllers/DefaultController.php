@@ -113,13 +113,19 @@ class DefaultController extends Controller
     
     public function actionUser()
     {
-        $user = new User();
-        // var_dump($_COOKIE);
-        // $authKey = $_COOKIE['authKey'];
-         $user->signup('alexander11', '123456');
-        var_dump($user->login('alexander11', '123456'));
-        var_dump($_SESSION);
-        $user->logout('alexander11');
-        var_dump($_SESSION);
+        $query = (new FluentInterface())
+            ->select()
+            ->from('users');
+        $model = (new PostsModel())->selectOne($query);
+        var_dump($model);die;
+
+//        $user = new User();
+//        // var_dump($_COOKIE);
+//        // $authKey = $_COOKIE['authKey'];
+//        $user->signup('alexander11', '123456');
+//        var_dump($user->login('alexander11', '123456'));
+//        var_dump($_SESSION);
+//        $user->logout('alexander11');
+////        var_dump($_SESSION);
     }
 }

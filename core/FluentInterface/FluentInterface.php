@@ -2,20 +2,32 @@
 
 namespace core\FluentInterface;
 
+use core\Helpers\ArrayHelper;
+
 class FluentInterface
 {
     /**
-     * Query
+     * Request to be formed
      *
      * @var
      */
     private $_query;
-    
+
+    /**
+     * Add part of the request
+     *
+     * @param $query
+     */
     public function addQuery($query)
     {
         $this->_query .= $query;
     }
-    
+
+    /**
+     * Provide an object as a crafted request
+     *
+     * @return mixed
+     */
     public function __toString()
     {
         return $this->_query;
@@ -27,7 +39,7 @@ class FluentInterface
      */
     public function select($condition = '*')
     {
-        $list = self::getList($condition);
+        $list = !is_array($condition) ? $condition : ArrayHelper::getArrayAsList($condition, ",", "");
         $this->addQuery("SELECT {$list}");
 
         return $this;
@@ -104,61 +116,44 @@ class FluentInterface
      */
     public function columns(array $condition)
     {
-        $list = self::getList($condition);
+        $list = ArrayHelper::getArrayAsList($condition, ",", "");
         $this->addQuery(" ({$list})");
 
         return $this;
     }
 
     /**
-     * @param $condition
-     * @return bool|\mysqli_result
+     * @param array $condition
+     * @return $this
      */
     public function values(array $condition)
     {
-        $list = self::getList($condition, true);
+        $list = ArrayHelper::getArrayAsList($condition, ",", "'");
         $this->addQuery(" VALUES ({$list})");
 
         return $this;
     }
 
     /**
-     * Get an array of records as an array
-     *
-     * @param $mysql_result
-     * @return array
+     * @param $tableName
+     * @return $this
      */
-    public static function getMySqlResultAsArray($mysql_result)
+    public function update($tableName)
     {
-        $result = [];
-        while ($row = $mysql_result->fetch_assoc()) {
-            $result[] = $row;
-        }
+        $this->addQuery("UPDATE {$tableName}");
 
-        return $result;
+        return $this;
     }
 
     /**
-     * Convert the array to the list in the form of "'value one', 'value two'..."
-     *
-     * @param $condition
-     * @param bool $quotes
-     * @return array|string
+     * @param array $condition
+     * @return $this
      */
-    public static function getList($condition, $quotes = false)
+    public function set(array $condition)
     {
-        if (is_array($condition)) {
-            $list = '';
-            $comma = ', ';
-            $quotes = $quotes ? "'" : "";
-            foreach ($condition as $key => $value) {
-                next($condition) ?: $comma = '';
-                $list .= "{$quotes}{$value}{$quotes}{$comma}";
-            }
-        } else {
-            return $condition;
-        }
+        $list = ArrayHelper::getArrayAsFieldValue($condition);
+        $this->addQuery(" SET {$list}");
 
-        return $list;
+        return $this;
     }
 }

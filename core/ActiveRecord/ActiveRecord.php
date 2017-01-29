@@ -4,20 +4,9 @@ namespace core\ActiveRecord;
 
 use core\FluentInterface\FluentInterface;
 
-// TODO реализовать методы save(), load(), delete()
+// TODO реализовать методы load(), delete()
 class ActiveRecord extends BaseActiveRecord
 {
-    public function fetch($query = '', $amount = false)
-    {
-        if ($amount == true) {
-            $result = $this->mysqli->query($query)->fetch_assoc();
-        } elseif ($amount == false) {
-            $result = self::getMySqlResultAsArray($this->mysqli->query($query));
-        }
-            
-        return $this->recordFields($result);
-    }
-
     /**
      * @param $query
      * @return array|bool|ActiveRecord
@@ -25,16 +14,20 @@ class ActiveRecord extends BaseActiveRecord
     public function selectOne($query)
     {
         if (empty($query)) {
-            return null;
-        }
-        if (!$request = $this->mysqli->query($query)) {
-            return null;
-        }
-        if (!$fetchAssoc = $request->fetch_assoc()) {
-            return null;
+            return false;
         }
 
-        return $this->recordFields($fetchAssoc);
+        $request = $this->mysqli->query($query);
+        if (!($request instanceof \mysqli_result)) {
+            return false;
+        }
+
+        $fetchAssoc = $request->fetch_assoc();
+        if (!is_array($fetchAssoc)) {
+            return false;
+        }
+
+        return $this->getMySqlResultAsActiveRecord($fetchAssoc);
     }
 
     /**
@@ -44,22 +37,41 @@ class ActiveRecord extends BaseActiveRecord
     public function selectAll($query)
     {
         if (empty($query)) {
-            return null;
+            return false;
         }
+
         $request = $this->mysqli->query($query);
-        if (!$request) {
-            return null;
+        if (!($request instanceof \mysqli_result)) {
+            return false;
         }
-        return $this->recordFields(self::getMySqlResultAsArray($request));
+
+        $mySqlResultArray = self::getMySqlResultAsArray($request);
+        if (!is_array($mySqlResultArray)) {
+            return false;
+        }
+
+        return $this->getMySqlResultAsActiveRecord($mySqlResultArray);
     }
 
     public function insertOne($query)
     {
+        if (empty($query)) {
+            return null;
+        }
+
         return $this->mysqli->query($query);
     }
 
+    /**
+     * @param $query
+     * @return bool|\mysqli_result
+     */
     public function updateOne($query)
     {
+        if (empty($query)) {
+            return null;
+        }
+
         return $this->mysqli->query($query);
     }
     
@@ -69,32 +81,38 @@ class ActiveRecord extends BaseActiveRecord
      * @param $records
      * @return array|ActiveRecord
      */
-    protected function recordFields($records)
+    protected function getMySqlResultAsActiveRecord($records)
     {
         $result = [];
+        $singleModel = new $this;
         foreach ($records as $key => $kit) {
             if (is_array($kit)) {
-                $activeRecord = new $this;
+                $model = new $this;
                 foreach ($kit as $field => $value) {
-                    $activeRecord->fields[$field] = $value;
+                    $model->{$field} = $value;
                 }
-                $result[] = $activeRecord;
-            } else {
-                $this->fields[$key] = $kit;
+                $result[] = $model;
+                continue;
             }
+
+            $singleModel->{$key} = $kit;
         }
 
-        return !empty($result) ? $result : $this;
+        return !empty($result) ? $result : $singleModel;
     }
-    
+
     /**
      * Get an array of records as an array
      *
      * @param $mysql_result
-     * @return array
+     * @return array|bool
      */
     protected static function getMySqlResultAsArray($mysql_result)
     {
+        if (!($mysql_result instanceof \mysqli_result)) {
+            return false;
+        }
+
         $result = [];
         while ($row = $mysql_result->fetch_assoc()) {
             $result[] = $row;
@@ -103,36 +121,55 @@ class ActiveRecord extends BaseActiveRecord
         return $result;
     }
 
+    /**
+     * Running before saving model
+     *
+     * @return bool
+     */
     public function beforeSave()
     {
-
+        return true;
     }
 
-
+    /**
+     * Saves or updates the data in the model
+     *
+     * @return bool
+     */
     final public function save()
     {
-        $this->beforeSave();
+        if (!$this->beforeSave()) {
+            return false;
+        }
+
         $query = new FluentInterface();
         $primaryKey = $this->{$this->getPrimaryKey()};
+        $fields = $this->fields;
         if (!empty($primaryKey)) {
-            // TODO реализовать update() и set()
+            unset($fields[$this->getPrimaryKey()]);
             $sql = $query
                 ->update($this->getTableName())
-                ->set($this->fields)
+                ->set($fields)
                 ->where([[$this->getPrimaryKey() => $primaryKey]]);
-            $this->updateOne($sql);
+            $result = $this->updateOne($sql);
         } else {
             $sql = $query
                 ->insert($this->getTableName())
-                ->columns(array_keys($this->fields))
-                ->values(array_values($this->fields));
-            $this->insertOne($sql);
+                ->columns(array_keys($fields))
+                ->values(array_values($fields));
+            $result = $this->insertOne($sql);
         }
-        $this->afterSave();
+
+        return $result == true ? $this->beforeSave() : false;
     }
 
+    /**
+     * Running after saving model
+     *
+     * @return bool
+     */
     public function afterSave()
     {
-
+        return true;
     }
 }

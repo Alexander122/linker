@@ -5,8 +5,11 @@ namespace core\Traits;
 
 use core\FluentInterface\FluentInterface;
 
+// TODO сделать главный класс Linker и поместить в него регистрацию, роутинг
+// TODO реализовать фронт контроллер (как в Magento)
 trait Authentication
 {
+    // TODO полазить в yii2 и хорошенько посмотреть как там реализована аутентификация (можно вынести аутентификацию в отдельный модуль)
     public function signup($login, $password)
     {
         $query = (new FluentInterface())
@@ -17,14 +20,16 @@ trait Authentication
         if ($user) {
             return false;
         }
+
         $user = new self();
         $user->{$this->getLoginField()} = $login;
         $user->{$this->getPasswordField()} = md5($password);
         $user->{$this->getAuthKeyField()} = $this->getAuthenticationKey();
-        // TODO save() нечего не возвращает
-        $user->save();
+        if ($user->save()) {
+            return true;
+        }
 
-        return $user;
+        return false;
     }
     
     public function login($login, $password, $rememberMe = false)
@@ -34,31 +39,33 @@ trait Authentication
             ->select()
             ->from($this->getTableName())
             ->where([[$this->getAuthKeyField() => $_COOKIE[$this->getAuthKeyField()]]]);
-            if ($user = $this->selectOne($query)) {
+            $user = $this->selectOne($query);
+            if ($user) {
                 if (session_status() == PHP_SESSION_NONE) {
                     session_start();
                 }
+
                 $_SESSION['user_' . $user->id] = $user;
                 return true;
             }
-            // редирект на домашнюю страницу
-            // if ($_COOKIE[$this->getAuthKeyField()] === $user->{$this->getAuthKeyField()}) {
-
-            // }
         }
+
         $query = (new FluentInterface())
             ->select()
             ->from($this->getTableName())
             ->where([[$this->getLoginField() => $login]]);
-        if (!$user = $this->selectOne($query)) {
+        $user = $this->selectOne($query);
+        if (!$user) {
             return false;
         }
+
         if ($this->checkPassword($password, $user->password)) {
             unset($_COOKIE[$this->getAuthKeyField()]);
             setcookie($this->getAuthKeyField(), $user->{$this->getAuthKeyField()}, $rememberMe ? time() + 60 * 60 * 24 * 30 : 0);
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
+
             $_SESSION['user_' . $user->id] = $user;
             return true;
         }

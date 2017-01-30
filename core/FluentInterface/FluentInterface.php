@@ -156,4 +156,14 @@ class FluentInterface
 
         return $this;
     }
+
+    /**
+     * @return $this
+     */
+    public function delete()
+    {
+        $this->addQuery("DELETE ");
+
+        return $this;
+    }
 }

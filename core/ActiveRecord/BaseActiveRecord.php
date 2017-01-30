@@ -42,4 +42,14 @@ class BaseActiveRecord extends Model
     {
         $this->fields[$name] = $value;
     }
+
+    /**
+     * Returns the model field
+     *
+     * @return array
+     */
+    public function getAllFields()
+    {
+        return $this->fields;
+    }
 }

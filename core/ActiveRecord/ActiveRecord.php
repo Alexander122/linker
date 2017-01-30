@@ -4,7 +4,6 @@ namespace core\ActiveRecord;
 
 use core\FluentInterface\FluentInterface;
 
-// TODO реализовать методы load(), delete()
 class ActiveRecord extends BaseActiveRecord
 {
     /**
@@ -144,7 +143,7 @@ class ActiveRecord extends BaseActiveRecord
 
         $query = new FluentInterface();
         $primaryKey = $this->{$this->getPrimaryKey()};
-        $fields = $this->fields;
+        $fields = $this->getAllFields();
         if (!empty($primaryKey)) {
             unset($fields[$this->getPrimaryKey()]);
             $sql = $query
@@ -172,4 +171,6 @@ class ActiveRecord extends BaseActiveRecord
     {
         return true;
     }
+
+
 }

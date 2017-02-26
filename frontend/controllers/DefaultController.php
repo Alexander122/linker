@@ -120,9 +120,11 @@ class DefaultController extends Controller
     {
         $query = (new FluentInterface())
             ->select()
-            ->from('users');
-        $model = (new PostsModel())->selectOne($query);
-        var_dump($model);die;
+            ->from('users')
+            ->where([['test' => 1], 'and', ['test2' => 2], 'or', ['test' => 3]]);
+        var_dump($query);die;
+//        $model = (new PostsModel())->selectOne($query);
+//        var_dump($model);die;
 
 //        $user = new User();
 //        // var_dump($_COOKIE);

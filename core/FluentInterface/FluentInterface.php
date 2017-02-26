@@ -58,7 +58,7 @@ class FluentInterface
 
     /**
      * This condition should be written as [['field one' => 'value one'], 'and', ['field two' => 'value two']... ]
-     * For example: ->where(['id' => 1, 'name' => 'Alex']) or ->where(["`id` = 1", "`name` = 'Alex'"])
+     * For example: ->where([['id' => 1], 'and', ['name' => 'Alex']])
      *
      * @param array $condition
      * @return $this
@@ -69,9 +69,12 @@ class FluentInterface
         foreach ($condition as $key => $value) {
             if (is_array($value)) {
                 $item = each($value);
-                $this->addQuery("`{$item['key']}` = '{$item['value']}'");
+                $equality = ArrayHelper::getArrayAsFieldValue([
+                    $item['key'] => $item['value']
+                ]);
+                $this->addQuery($equality);
             } else {
-                $this->addQuery(" {$value} ");
+                $this->addQuery(" " . mb_strtoupper($value) . " ");
             }
         }
 

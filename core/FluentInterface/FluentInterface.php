@@ -44,7 +44,7 @@ class FluentInterface
 
         return $this;
     }
-    
+
     /**
      * @param $tableName
      * @return $this
@@ -52,12 +52,13 @@ class FluentInterface
     public function from($tableName)
     {
         $this->addQuery(" FROM {$tableName}");
-        
+
         return $this;
     }
-    
+
     /**
      * This condition should be written as [['field one' => 'value one'], 'and', ['field two' => 'value two']... ]
+     * For example: ->where(['id' => 1, 'name' => 'Alex']) or ->where(["`id` = 1", "`name` = 'Alex'"])
      *
      * @param array $condition
      * @return $this

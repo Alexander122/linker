@@ -14,6 +14,7 @@ class Route
 
     /**
      * Route constructor.
+     * @param AbstractStrategy $parser
      */
     public function __construct(AbstractStrategy $parser)
     {

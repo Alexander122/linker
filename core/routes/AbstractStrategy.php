@@ -4,6 +4,7 @@ namespace core\routes;
 
 use core\Traits\CamelCaseTrait;
 
+// TODO Реализовать классы, которые парсят урл, при помощи шаблонного метода
 abstract class AbstractStrategy
 {
     use CamelCaseTrait;

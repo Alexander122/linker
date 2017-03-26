@@ -21,6 +21,7 @@ class Model implements \SplSubject
      */
     public function __construct()
     {
+        // TODO внедрить тут DI
         $config = Manager::config('core', 'db');
         $databaseConfiguration = new DatabaseConfiguration($config);
         $db = MySQLiConnection::getInstance($databaseConfiguration);

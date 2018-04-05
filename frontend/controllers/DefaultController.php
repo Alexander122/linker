@@ -11,6 +11,10 @@ use core\FluentInterface\FluentInterface;
 use core\Social\VkApi;
 use core\Observers\ModelObserver;
 use core\User\User;
+use core\Composite\ImageElement;
+use core\Composite\Form;
+use core\Composite\InputElement;
+
 
 /**
  * Class DefaultController
@@ -49,7 +53,7 @@ class DefaultController extends Controller
         $obj->func = function() {
             return 111;
         };
-        call_user_func_array([$obj, 'test'], ['YES 1 !!!', 'YES 2 !!!']);
+        call_user_func_array([$obj, 'Test'], ['YES 1 !!!', 'YES 2 !!!']);
         
         var_dump($id);
     }
@@ -121,7 +125,7 @@ class DefaultController extends Controller
         $query = (new FluentInterface())
             ->select()
             ->from('users')
-            ->where([['test' => 1], 'and', ['test2' => 2], 'or', ['test' => 3]]);
+            ->where([['Test' => 1], 'and', ['test2' => 2], 'or', ['Test' => 3]]);
         var_dump($query);die;
 //        $model = (new PostsModel())->selectOne($query);
 //        var_dump($model);die;
@@ -134,5 +138,17 @@ class DefaultController extends Controller
 //        var_dump($_SESSION);
 //        $user->logout('alexander11');
 ////        var_dump($_SESSION);
+    }
+
+    public function actionComposite()
+    {
+        $form = new Form();
+        $form->addRenderElement(new ImageElement('https://i.ytimg.com/vi/A1MEFe2K81g/hqdefault.jpg'));
+        $form->addRenderElement(new InputElement());
+
+
+        $this->render('default/composite.php', array(
+            'form' => $form
+        ));
     }
 }

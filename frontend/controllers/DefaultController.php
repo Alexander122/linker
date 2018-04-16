@@ -14,6 +14,7 @@ use core\User\User;
 use core\Composite\ImageElement;
 use core\Composite\Form;
 use core\Composite\InputElement;
+use core\Iterator\Collection;
 
 
 /**
@@ -147,8 +148,20 @@ class DefaultController extends Controller
         $form->addRenderElement(new InputElement());
 
 
-        $this->render('default/composite.php', array(
+        $this->render('composite', array(
             'form' => $form
         ));
+    }
+
+    public function actionIterator()
+    {
+        $collection = new Collection();
+        $collection->addItem(array('first' => 'item'));
+        $collection->addItem(array('second' => 'item'));
+
+        foreach ($collection as $_key => $_item) {
+            var_dump($_key);
+            var_dump($_item);
+        }
     }
 }
